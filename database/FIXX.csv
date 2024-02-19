@@ -1,0 +1,252 @@
+"id","query","answer"
+2,Send Care market order via FIX,"self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_care_market()
+self.fix_manager.send_message_fix_standard(self.nos_message)
+"
+3,"Generate code for sending DMA limit order via FIX with params: ""Account"":""Client1""","self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_limit()
+client = self.data_set.get_client_by_name(""client_1"")  # CLIENT1
+self.nos_message.change_parameters({""Account"": client})
+self.fix_manager.send_message_fix_standard(self.nos_message)
+"
+5,Send Care limit order via FIX,"self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_care_limit()
+self.fix_manager.send_message_fix_standard(self.nos_message)
+"
+7,Generate code for sending DMA market order via FIX and get order id from response,"self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_market()
+self.fix_manager.send_message_and_receive_response_fix_standard(self.nos_message)
+response = self.fix_manager.send_message_and_receive_response_fix_standard(self.nos_message)
+order_id = response[0].get_parameter(""OrderID"")"
+8,Send Care limit order via FIX4.2,"self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side_fix42, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_fix42_care_limit()
+self.fix_manager.send_message(self.nos_message)
+"
+9,Send DMA limit order via FIX4.2 with qty=30,"self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side_fix42, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_fix42_dma_limit()
+qty=""40""
+self.nos_message.change_parameters({""OrderQty"":qty})
+self.fix_manager.send_message(self.nos_message)
+"
+10,Send Care limit order via FIX4.2 and compare ClOrdID from the first execution report,"self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side_fix42, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_fix42_care_limit()
+self.fix_manager.send_message_and_receive_response(self.nos_message)
+exec_report = self.fix_manager.get_first_message('ExecutionReport').get_parameters()
+expected_result = {""ClOrdID"": self.nos_message.get_parameter(""ClOrdID"")}
+self.fix_manager.compare_values(expected_result, exec_report, 'Verify ClOrdID')
+"
+11,Generate code to send DMA market order via FIX and make sure exec type = 0 for last execution report,"self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_market()
+self.fix_manager.send_message_and_receive_response_fix_standard(self.nos_message)
+exec_report = self.fix_manager.get_last_message('ExecutionReport').get_parameters()
+expected_result = {'ExecType': '0'}
+self.fix_manager.compare_values(expected_result, exec_report, 'ExecType is New')"
+12,Send DMA limit order via FIX and compare ClOrdeID with ClOrdeID from last execution report,"self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_limit=()
+self.fix_manager.send_message_and_receive_response_fix_standard(self.nos_message)
+exec_report = self.fix_manager.get_last_message('ExecutionReport').get_parameters()
+cl_ord_id = self.nos_message.get_parameter(""ClOrdID"")
+expected_result = {""ClOrdID"":cl_ord_id}
+self.fix_manager.compare_values(expected_result, exec_report, 'Verify ClOrdID')
+"
+13,Generate code for sending DMA market order via FIX and get execution report from response,"self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_market()
+self.fix_manager.send_message_and_receive_response_fix_standard(self.nos_message)
+exec_report = self.fix_manager.get_last_message('ExecutionReport').get_parameters()
+"
+6,"Generate code for sending DMA market order via FIX with params: ""Qty"":""30"", ""Side"":""sell"", ""TimeInForce"":""Day""?","self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_market()
+side = ""2""
+qty = ""30""
+tif = ""0"" # Day
+self.nos_message.change_parameters({""Side"": side, ""OrderQtyData"": {""OrderQty"":qty},""TimeInForce"":tif})
+self.fix_manager.send_message_fix_standard(self.nos_message)"
+1,"Generate code for sending DMA limit order via FIX with params: ""Price"":""10"", ""Qty"":""40"", ""TIF"":""GTC""","self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_limit()
+price=""10""
+qty=""40""
+tif=""1"" # Good Till Cancel
+self.nos_message.change_parameters({""Price"": price, ""OrderQtyData"": {""OrderQty"":qty},""TimeInForce"": tif})
+self.fix_manager.send_message_fix_standard(self.nos_message)"
+14,Get execution report from response after order submitting,"self.fix_manager.send_message_and_receive_response_fix_standard(self.nos_message)
+exec_report = self.fix_manager.get_last_message('ExecutionReport').get_parameters()
+"
+4,Generate code for sending DMA market order via FIX with params: Account = MOClient,"self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_market()
+client = self.data_set.get_client_by_name(""client_pt_1"")  # MOClient
+self.nos_message.change_parameters({""Account"": client})
+self.fix_manager.send_message_fix_standard(self.nos_message)"
+15,Send DMA limit order via FIX and compare ClOrdID with last execution report,"self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_limit()
+self.fix_manager.send_message_and_receive_response_fix_standard(self.nos_message)
+exec_report = self.fix_manager.get_last_message('ExecutionReport').get_parameters()
+exp_cl_ord_id = self.nos_message.get_parameter('ClOrdID')
+self.fix_manager.compare_values({""ClOrdID"": exp_cl_ord_id}, exec_report, ""Compare ClOrdID"")"
+16,Send default iceberg via FIX,"self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_iceberg()
+self.fix_manager.send_message_fix_standard(self.nos_message)
+"
+17,"Send Care limit with Currency=USD, Instrument=ISI1, account=MOClient via FIX","self.fix_env = self.environment.get_list_fix_environment()[0]
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_limit()
+client = self.data_set.get_client_by_name(""client_pt_1"")  # MOClient
+currency = self.data_set.get_currency_by_name(""currency_4"")  # USD
+instrument = self.data_set.get_fix_instrument_by_name(""instrument_2"")  # ISI1
+self.nos_message.change_parameters({""Account"": client, ""Currency"":currency, ""Instrument"":instrument})
+self.fix_manager.send_message_fix_standard(self.nos_message)"
+18,Send DMA limit order via FIX and add PendingAndNew rule,"self.fix_env = self.environment.get_list_fix_environment()[0]
+self.venue_client =  self.data_set.get_venue_client_names_by_name('client_1_venue_1')
+self.mic = self.data_set.get_mic_by_name('mic_1')
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_limit()
+self.price = self.nos_message.get_parameter(""Price"")
+try:
+	rule = self.rule_manager.add_NewOrdSingleExecutionReportPendingAndNew_FIXStandard(
+	self.fix_env.buy_side, self.venue_client, self.mic, float(self.price))
+	self.fix_manager.send_message_fix_standard(self.nos_message)
+finally:
+	self.rule_manager.remove_rule(rule)"
+19,"Send DMA market order via FIX , add market rule","self.fix_env = self.environment.get_list_fix_environment()[0]
+self.venue_client =  self.data_set.get_venue_client_names_by_name('client_1_venue_1')
+self.mic = self.data_set.get_mic_by_name('mic_1')
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_market()
+try:
+	rule = self.rule_manager.add_NewOrdSingle_Market_FIXStandard(
+	self.fix_env.buy_side, self.venue_client, self.mic, trade=false,trade_qty=0,avg_px=0.0)
+	self.fix_manager.send_message_fix_standard(self.nos_message)
+finally:
+	self.rule_manager.remove_rule(rule)"
+24,"Send DMA limit order via FIX , add FOK rule","self.fix_env = self.environment.get_list_fix_environment()[0]
+self.venue_client =  self.data_set.get_venue_client_names_by_name('client_1_venue_1')
+self.mic = self.data_set.get_mic_by_name('mic_1')
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_limit()
+self.price = self.nos_message.get_parameter(""Price"")
+try:
+	rule = self.rule_manager.add_NewOrdSingle_FOK_FIXStandard(
+	self.fix_env.buy_side, self.venue_client, self.mic, trade=false, price=float(self.price))
+	self.fix_manager.send_message_fix_standard(self.nos_message)
+finally:
+	self.rule_manager.remove_rule(rule)"
+20,"Send DMA market order via FIX , add market rule with trade","self.fix_env = self.environment.get_list_fix_environment()[0]
+self.venue_client =  self.data_set.get_venue_client_names_by_name('client_1_venue_1')
+self.mic = self.data_set.get_mic_by_name('mic_1')
+self.avg_px = ""10""
+self.trade_qty = ""100""
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_market()
+try:
+	rule = self.rule_manager.add_NewOrdSingle_Market_FIXStandard(
+	self.fix_env.buy_side, self.venue_client, self.mic, trade=false,trade_qty=int(self.trade_qty),avg_px=float(self.avg_px))
+	self.fix_manager.send_message_fix_standard(self.nos_message)
+finally:
+	self.rule_manager.remove_rule(rule)"
+21,"Send DMA limit order via FIX , add trade rule","self.fix_env = self.environment.get_list_fix_environment()[0]
+self.venue_client =  self.data_set.get_venue_client_names_by_name('client_1_venue_1')
+self.mic = self.data_set.get_mic_by_name('mic_1')
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_limit()
+self.price = self.nos_message.get_parameter(""Price"")
+self.qty = self.nos_message.get_parameter(""OrderQtyData"")[""OrderQty""]
+try:
+	rule = self.rule_manager.add_NewOrdSingleExecutionReportTrade_FIXStandard(
+	self.fix_env.buy_side, self.venue_client, self.mic, float(self.price), int(self.qty))
+	self.fix_manager.send_message_fix_standard(self.nos_message)
+finally:
+	self.rule_manager.remove_rule(rule)"
+22,"Send DMA limit order via FIX , add rules: PendingAndNew, Trade","self.fix_env = self.environment.get_list_fix_environment()[0]
+self.venue_client =  self.data_set.get_venue_client_names_by_name('client_1_venue_1')
+self.mic = self.data_set.get_mic_by_name('mic_1')
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_limit()
+self.price = self.nos_message.get_parameter(""Price"")
+self.qty = self.nos_message.get_parameter(""OrderQtyData"")[""OrderQty""]
+try:
+	rule = self.rule_manager.add_NewOrdSingleExecutionReportPendingAndNew_FIXStandard(
+	self.fix_env.buy_side, self.venue_client, self.mic, float(self.price))
+	rule2 = self.rule_manager.add_NewOrdSingleExecutionReportTrade_FIXStandard(
+	self.fix_env.buy_side, self.venue_client, self.mic, float(self.price), int(self.qty))
+	self.fix_manager.send_message_fix_standard(self.nos_message)
+finally:
+	self.rule_manager.remove_rules([rule, rule2])"
+25,"Send DMA limit order via FIX , add IOK rule","self.fix_env = self.environment.get_list_fix_environment()[0]
+self.venue_client =  self.data_set.get_venue_client_names_by_name('client_1_venue_1')
+self.mic = self.data_set.get_mic_by_name('mic_1')
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_limit()
+self.price = self.nos_message.get_parameter(""Price"")
+try:
+	rule = self.rule_manager.add_NewOrdSingle_IOC_FIXStandard(
+	self.fix_env.buy_side, self.venue_client, self.mic, trade=false, tradedQty=0, price=float(self.price))
+	self.fix_manager.send_message_fix_standard(self.nos_message)
+finally:
+	self.rule_manager.remove_rule(rule)"
+23,"Send DMA limit order via FIX , add TradeByOrdQty rule","self.fix_env = self.environment.get_list_fix_environment()[0]
+self.venue_client =  self.data_set.get_venue_client_names_by_name('client_1_venue_1')
+self.mic = self.data_set.get_mic_by_name('mic_1')
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_limit()
+self.price = self.nos_message.get_parameter(""Price"")
+self.trd_price = self.price
+self.qty = self.nos_message.get_parameter(""OrderQtyData"")[""OrderQty""]
+self.trd_qty = self.qty
+try:
+	        rule = self.rule_manager.add_NewOrdSingleExecutionReportTradeByOrdQty_FIXStandard(
+            self.fix_env.buy_side, self.venue_client, self.mic, float(self.price), float(self.trd_price), int(self.qty),
+            int(self.trd_qty))
+        self.fix_manager.send_message_fix_standard(self.nos_message)
+finally:
+	self.rule_manager.remove_rule(rule)"
+26,"Send DMA market order via FIX , add IOK rule","self.fix_env = self.environment.get_list_fix_environment()[0]
+self.venue_client =  self.data_set.get_venue_client_names_by_name('client_1_venue_1')
+self.mic = self.data_set.get_mic_by_name('mic_1')
+self.fix_manager = FixManager(self.fix_env.sell_side, self.test_id)
+self.nos_message = FixMessageNewOrderSingleOMS(self.data_set)
+self.nos_message.set_default_dma_market()
+self.price = ""10""
+try:
+	rule = self.rule_manager.add_MarketNewOrdSingle_IOC_FIXStandard(
+	self.fix_env.buy_side, self.venue_client, self.mic, trade=false, tradedQty=0, price=float(self.price))
+	self.fix_manager.send_message_fix_standard(self.nos_message)
+finally:
+	self.rule_manager.remove_rule(rule)"
